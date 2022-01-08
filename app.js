@@ -21,6 +21,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 
+// make db connection
+const mongodb = require(process.cwd()+"/bin/db/mongodb")
+mongodb.connectToServer(()=>{
+  console.log("mongo db connected")
+})
+
 app.use('/', rootRouter);
 app.use('/views', viewsRouter);
 

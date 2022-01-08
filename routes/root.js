@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongodb = require(process.cwd()+"/bin/db/mongodb")
 
 /** 파일 업로드 설정 */
 const multer  = require('multer')
@@ -49,6 +50,13 @@ const upload = multer({
 // req 요청 req 응답
 // 응답 메소드는 send, sendFile, json, redirect 등이 있음
 router.post('/', function(req, res, next) {
+  const db = mongodb.getDb();
+  db.collection("test").insert(
+    {
+      name: "abc",
+      pass: "sdfdsf"
+    }
+ )
   res.send('respond post with a resource');
 });
 router.get('/', function(req, res, next) {
