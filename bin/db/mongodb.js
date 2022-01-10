@@ -43,8 +43,7 @@ module.exports = {
       return callback();
     });
   },
-
   getDb: function () {
     return dbConnection;
-  },
+  }
 };

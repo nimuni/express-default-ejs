@@ -53,6 +53,12 @@ mongodb.connectToServer(()=>{
   console.log("mongo db connected")
 })
 
+// multer
+const multer = require(process.cwd()+"/bin/multer/multer")
+multer.init(()=>{
+  console.log("multer is activated")
+})
+
 // router settings
 app.use('/', rootRouter);
 app.use('/views', viewsRouter);
@@ -67,6 +73,7 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.log(err)
 
   // render the error page
   res.status(err.status || 500);

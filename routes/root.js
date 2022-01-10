@@ -1,46 +1,9 @@
 const express = require('express');
+const { ObjectId } = require('mongodb');
+const path = require('path');
 const router = express.Router();
 const mongodb = require(process.cwd()+"/bin/db/mongodb")
-
-/** 파일 업로드 설정 */
-const multer  = require('multer')
-//파일을 저장할 디렉토리 설정 (현재 위치에 files라는 폴더가 생성되고 하위에 파일이 생성된다.)
-//multer 미들웨어 파일 제한 값 (Doc 공격으로부터 서버를 보호하는데 도움이 된다.)
-const limits = {
-  // fieldNameSize: 200, // 필드명 사이즈 최대값 (기본값 100bytes)
-  // filedSize: 1024 * 1024, // 필드 사이즈 값 설정 (기본값 1MB)
-  // fields: 2, // 파일 형식이 아닌 필드의 최대 개수 (기본 값 무제한)
-  // fileSize : 16777216, //multipart 형식 폼에서 최대 파일 사이즈(bytes) "16MB 설정" (기본 값 무제한)
-  // files : 10, //multipart 형식 폼에서 파일 필드 최대 개수 (기본 값 무제한)
-}
-const fileFilter = (req, file, callback) =>{
-  // const typeArray = file.mimetype.split('/');
-
-  // const fileType = typeArray[1]; // 확장자 추출
-  
-  // //확장자 구분 검사
-  // if(fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png'){
-  //     callback(null, true)
-  // } else {
-  //     return callback({message: "*.jpg, *.jpeg, *.png 파일만 업로드가 가능합니다."}, false)
-  // }
-  callback(null, true)
-}
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, "files/")
-  },
-  filename: (req, file, callback) => {
-    callback(null, file.originalname);  // TODO 파일명 그대로쓰면 중복파일명이 덮어지므로 추후 변경 필요
-  }
-})
-const upload = multer({ 
-  dest: process.cwd()+'/files/', // 업로드 경로
-  limits: limits,
-  fileFilter: fileFilter,
-  storage: storage
-}) 
-/** 파일 업로드 설정 끝 */
+const multer = require(process.cwd()+"/bin/multer/multer")
 
 // CRUD 기본. RESTapi 종류 하단 참고.
 // POST	    POST를 통해 해당 URI를 요청하면 리소스를 생성합니다.
@@ -56,7 +19,7 @@ router.post('/', function(req, res, next) {
       name: "abc",
       pass: "sdfdsf"
     }
- )
+  )
   res.send('respond post with a resource');
 });
 router.get('/', function(req, res, next) {
@@ -68,23 +31,46 @@ router.put('/', function(req, res, next) {
 router.delete('/', function(req, res, next) {
   res.send('respond delete with a resource');
 });
-router.post('/single/upload', upload.single('file'), (req, res, next) => {
-  const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } = req.file //전송 시 파일을 file이라는 필드에 전송
-  const { name } = req.body;
+router.post('/single/upload', multer.getMulter().single('file'), (req, res, next) => {
+  const db = mongodb.getDb();
 
-  console.log("body 데이터 : ", name);
-  console.log("폼에 정의된 필드명 : ", fieldname);
-  console.log("사용자가 업로드한 파일 명 : ", originalname);
-  console.log("파일의 인코딩 타입 : ", encoding);
-  console.log("파일의 Mime 타입 : ", mimetype);
-  console.log("파일이 저장된 폴더 : ", destination);
-  console.log("destinatin에 저장된 파일 명 : ", filename);
-  console.log("업로드된 파일의 전체 경로 ", path);
-  console.log("파일의 바이트(byte 사이즈)", size);
+  console.log("body 데이터 : ", req.body.name);
+  console.log("폼에 정의된 필드명 : ", req.file.fieldname);
+  console.log("사용자가 업로드한 파일 명 : ", req.file.originalname);
+  console.log("파일의 인코딩 타입 : ", req.file.encoding);
+  console.log("파일의 Mime 타입 : ", req.file.mimetype);
+  console.log("파일이 저장된 폴더 : ", req.file.destination);
+  console.log("destinatin에 저장된 파일 명 : ", req.file.filename);
+  console.log("업로드된 파일의 전체 경로 ", req.file.path);
+  console.log("파일의 바이트(byte 사이즈)", req.file.size);
 
-  res.json({ok: true, data: "Single Upload Ok"})
+  db.collection("files").insertOne(
+    { file: [req.file]}, 
+    function(err, result) {
+      if (err) throw err;
+      
+      res.json({ok: true, data: "Multipart Single File Upload Ok", fileId:result.insertedId})
+    }
+  )
 })
-router.post('/multipart/upload', upload.array('file'), (req, res, next) => {
+router.get('/single/download/:id/:order', function(req, res, next) {
+  const db = mongodb.getDb();
+
+  db.collection("files").findOne({_id:new ObjectId(req.params.id)}, function(err, items) {
+    let fileLength = items.file.length;
+    let order = req.params.order ? req.params.order : 0
+    if(fileLength <= order) res.status(404).send("404 File not found");
+
+    let filePath = path.join(process.cwd(), "files", items.file[order].filename);
+    let realName = items.file[order].originalname;
+
+    res.download(filePath, realName, function(err){
+      if(err) console.log(err);
+    })
+  })
+});
+router.post('/multipart/upload', multer.getMulter().array('file'), (req, res, next) => {
+  const db = mongodb.getDb();
   console.log(req.files);
 
   const { name } = req.body;
@@ -102,7 +88,14 @@ router.post('/multipart/upload', upload.array('file'), (req, res, next) => {
     console.log("파일의 바이트(byte 사이즈)", data.size);
   })
 
-  res.json({ok: true, data: "Multipart Upload Ok"})
+  db.collection("files").insertOne(
+    { file: req.files },
+    function(err, result) {
+      if (err) throw err;
+      
+      res.json({ok: true, data: "Multipart Multiple File Upload Ok", fileId:result.insertedId})
+    }
+  )
 })
 
 module.exports = router;
