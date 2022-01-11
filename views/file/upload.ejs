@@ -15,14 +15,14 @@
       <section>
         <article>
           <h4>File upload UI</h4>
-          <form action="/file/upload" enctype="multipart/form-data" method="post">
+          <form>
             <label for="imageUpload">Select a Image</label>
             <input type="file" id="imageUpload" name="file" accept="image/png, image/jpg">
             <label for="videoUpload">Select a Video</label>
             <input type="file" id="videoUpload" name="file" accept="video/mp4">
 
-            <button id="uploadBtn">Submit</button>
           </form>
+          <button id="uploadBtn">Submit</button>
         </article>
       </section>
     </main>
@@ -31,4 +31,24 @@
     </footer>
   </body>
 </html>
-<script type="text/javascript"></script>
+<script type="text/javascript">
+  let uploadBtn = document.getElementById("uploadBtn");
+  let imageUpload = document.getElementById("imageUpload")
+  let videoUpload = document.getElementById("videoUpload")
+
+  
+  uploadBtn.addEventListener("click", function(e) {
+    let formData = new FormData();
+    formData.append("file", imageUpload.files[0])
+    formData.append("file", videoUpload.files[0])
+
+    axios.post("/file/upload", formData, { headers: {"Content-Type": "multipart/form-data"}})
+      .then((response) => {
+        alert("파일 업로드 성공")
+        window.location.href="../"
+      })
+      .catch((err)=>{
+        console.error(err);
+      })
+  })
+</script>
