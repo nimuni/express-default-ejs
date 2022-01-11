@@ -48,13 +48,13 @@ app.use(morgan('customFormat', {
 app.use(morgan('customFormat'));
 
 // make db connection
-const mongodb = require(process.cwd()+"/bin/db/mongodb")
+const mongodb = require(process.cwd()+"/js/db/mongodb")
 mongodb.connectToServer(()=>{
   console.log("mongo db connected")
 })
 
 // multer
-const multer = require(process.cwd()+"/bin/multer/multer")
+const multer = require(process.cwd()+"/js/multer/multer")
 multer.init(()=>{
   console.log("multer is activated")
 })
