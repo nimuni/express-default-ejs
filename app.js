@@ -7,7 +7,6 @@ const moment = require('moment-timezone');
 const TIMEZONE = "Asia/Seoul";
 
 const rootRouter = require('./routes/root');
-const viewsRouter = require('./routes/views');
 
 const app = express();
 
@@ -61,7 +60,6 @@ multer.init(()=>{
 
 // router settings
 app.use('/', rootRouter);
-app.use('/views', viewsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

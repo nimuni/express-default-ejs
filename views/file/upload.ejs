@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% const ROOT_DIR = process.cwd() %>
+    <%- include(ROOT_DIR + '/views/layout/include'); %>
+  </head>
+  <body>
+    <header>
+      <%- include(ROOT_DIR + '/views/layout/header'); %>
+    </header>
+    <main>
+      <h1>File Upload page</h1>
+      <p>welcomeeeeee</p>
+
+      <section>
+        <article>
+          <h4>File upload UI</h4>
+          <form action="/file/upload" enctype="multipart/form-data" method="post">
+            <label for="imageUpload">Select a Image</label>
+            <input type="file" id="imageUpload" name="file" accept="image/png, image/jpg">
+            <label for="videoUpload">Select a Video</label>
+            <input type="file" id="videoUpload" name="file" accept="video/mp4">
+
+            <button id="uploadBtn">Submit</button>
+          </form>
+        </article>
+      </section>
+    </main>
+    <footer>
+      <%- include(ROOT_DIR + '/views/layout/footer'); %>
+    </footer>
+  </body>
+</html>
+<script type="text/javascript"></script>

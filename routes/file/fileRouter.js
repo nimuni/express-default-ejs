@@ -35,7 +35,7 @@ router.post('/upload', multer.getMulter().array('file'), (req, res, next) => {
           result.push(obj)
         })
         
-        res.json({ok: true, data: "Multipart Single File Upload Ok", result:result })
+        res.json({ok: true, data: "Multipart File Upload Ok", result:result })
         console.log(result)
       }
     )
