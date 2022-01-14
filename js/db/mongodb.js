@@ -21,7 +21,6 @@ const getConnectionString = function(){
 }
 
 const connectionString = getConnectionString();
-console.log(connectionString)
 
 const client = new MongoClient(connectionString, {
   useNewUrlParser: true,
@@ -34,6 +33,8 @@ module.exports = {
   connectToServer: function (callback) {
     client.connect(function (err, db) {
       if (err || !db) {
+        console.log("connectToServer Err")
+        console.log(err);
         return callback(err);
       }
 

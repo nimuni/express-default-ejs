@@ -9,22 +9,37 @@
       <%- include(ROOT_DIR + '/views/layout/header'); %>
     </header>
     <main>
-      <h1>File Upload page</h1>
-      <p>welcomeeeeee</p>
-
-      <section>
-        <article>
-          <h4>File upload UI</h4>
-          <form>
-            <label for="imageUpload">Select a Image</label>
-            <input type="file" id="imageUpload" name="file" accept="image/png, image/jpg">
-            <label for="videoUpload">Select a Video</label>
-            <input type="file" id="videoUpload" name="file" accept="video/mp4">
-
-          </form>
-          <button id="uploadBtn">Submit</button>
-        </article>
-      </section>
+      <div class="container testborder">
+        <h1>File Upload page</h1>
+        <p>welcomeeeeee</p>
+  
+        <section>
+          <article>
+            <h4>File upload UI</h4>
+            <form>
+              <div class="row">
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label for="imageUpload" class="form-label">Select a Image</label>
+                    <input type="file" class="form-control" id="imageUpload" name="file" accept="image/png, image/jpg">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label for="videoUpload" class="form-label">Select a Video</label>
+                    <input type="file" class="form-control" id="videoUpload" name="file" accept="video/mp4">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="mb-3">
+                    <button id="uploadBtn" class="btn btn-primary">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </article>
+        </section>
+      </div>
     </main>
     <footer>
       <%- include(ROOT_DIR + '/views/layout/footer'); %>
