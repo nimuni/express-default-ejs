@@ -1,5 +1,8 @@
 require('dotenv').config();
 const cryptoJs = require("crypto-js");
+/**
+ * 참조시 const util = require(process.cwd()+ "/js/common.util.js")
+ */
 
 const fn_aes256_encrypt = function (data) {
   let str;
@@ -15,7 +18,8 @@ const fn_aes256_encrypt = function (data) {
 
 const fn_aes256_decrypt = function (data) {
   let bytes = cryptoJs.AES.decrypt(data, process.env.AES_KEY);
-  return JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
+  let result = JSON.parse(bytes.toString(cryptoJs.enc.Utf8))
+  return result.toString();
 }
 
 module.exports = {

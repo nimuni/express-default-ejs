@@ -5,6 +5,10 @@ const mongodb = require(process.cwd()+"/js/db/mongodb")
 const path = require('path');
 const multer = require(process.cwd()+"/js/multer/multer")
 
+const accountRouter = require("./accountRouter")
+router.use("/account", accountRouter)
+
+
 // CRUD 기본. RESTapi 종류 하단 참고.
 // POST	    POST를 통해 해당 URI를 요청하면 리소스를 생성합니다.
 // GET	    GET를 통해 해당 리소스를 조회합니다. 리소스를 조회하고 해당 도큐먼트에 대한 자세한 정보를 가져온다.
