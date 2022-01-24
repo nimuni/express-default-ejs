@@ -1,24 +1,28 @@
 require('dotenv').config();
-const cryptojs = require("crypto-js");
-const AES_256_KEY = process.env.AES_256_KEY;
+const cryptoJs = require("crypto-js");
+/**
+ * 참조시 const util = require(process.cwd()+ "/js/common.util.js")
+ */
+
+const fn_aes256_encrypt = function (data) {
+  let str;
+  if(typeof data === "string"){
+    str = data;
+  } else if(typeof data === "object"){
+    str = JSON.stringify(data);
+  } else {
+    throw "data is not string or json object"
+  }
+  return cryptoJs.AES.encrypt(str, process.env.AES_KEY).toString()
+}
+
+const fn_aes256_decrypt = function (data) {
+  let bytes = cryptoJs.AES.decrypt(data, process.env.AES_KEY);
+  let result = JSON.parse(bytes.toString(cryptoJs.enc.Utf8))
+  return result.toString();
+}
 
 module.exports = {
-  fn_aes256_encrypt: function (data) {
-    let str;
-    console.log(`typeof data = ${typeof data}`)
-    if(typeof data === "string"){
-      str = data;
-    } else if(typeof data === "object"){
-      str = JSON.stringify(data);
-    } else {
-      throw "data is not string or json object"
-    }
-    console.log(cryptojs.AES.encrypt(str, AES_256_KEY).toString())
-    return cryptojs.AES.encrypt(str, AES_256_KEY)
-  },
-
-  fn_aes256_decrypt: function (data) {
-    let bytes = cryptojs.AES.decrypt(data, AES_256_KEY);
-    return JSON.parse(bytes.toString(cryptojs.enc.Utf8));
-  },
+  fn_aes256_encrypt,
+  fn_aes256_decrypt
 };

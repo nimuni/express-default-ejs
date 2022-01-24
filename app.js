@@ -16,6 +16,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 
+// passport 설정
+const passport = require('passport');
+const passportConfig = require('./js/passport/passport');
+app.use(passport.initialize());
+passportConfig();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
