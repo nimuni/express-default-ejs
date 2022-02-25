@@ -61,7 +61,7 @@ exports.updateOne = async function(req, res, next) {
     let search = { '_id': mongodb.objectId(req.params.id) };
     let updateData = { $set: tempData };
 
-    res.status(201).send(await tosService.insertOne(search, updateData));
+    res.status(201).send(await tosService.updateOne(search, updateData));
   } catch (err) {
     console.log(err)
     res.status(400).send(err)
@@ -70,7 +70,7 @@ exports.updateOne = async function(req, res, next) {
 exports.deleteOne = async function(req, res, next) {
   try {
     let tos = {'_id':mongodb.objectId(req.params.id)}
-    res.status(200).send(await tosService.insertOne(tos))
+    res.status(200).send(await tosService.deleteOne(tos))
   } catch (err) {
     res.status(400).json({err: err})
   }
