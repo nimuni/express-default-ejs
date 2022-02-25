@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
 router.post('/login/local', async function(req, res, next) {
   try {
@@ -21,7 +22,8 @@ router.post('/login/local', async function(req, res, next) {
       // 클라이언트에게 JWT생성 후 반환
       const token = jwt.sign(
         { email: user.email, name: user.name, auth: user.auth },
-        process.env.SECRET_KEY
+        process.env.SECRET_KEY,
+        { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN}
       );
   
       res.json({ token });
