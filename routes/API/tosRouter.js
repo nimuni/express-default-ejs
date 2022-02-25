@@ -13,6 +13,26 @@ router.get('/', async function(req, res, next) {
     res.status(400).json({err: err})
   }
 })
+router.get('/required', async function(req, res, next) {
+  const db = mongodb.getDb();
+  console.log(req.params)
+  try {
+    let data = await db.collection("tos").find({required: true, isUse: true}).toArray();
+    res.send(data);
+  } catch (err) {
+    res.status(400).json({err: err})
+  }
+})
+router.get('/selection', async function(req, res, next) {
+  const db = mongodb.getDb();
+  console.log(req.params)
+  try {
+    let data = await db.collection("tos").find({required: false, isUse: true}).toArray();
+    res.send(data);
+  } catch (err) {
+    res.status(400).json({err: err})
+  }
+})
 
 router.get('/:id', async function(req, res, next) {
   const db = mongodb.getDb();

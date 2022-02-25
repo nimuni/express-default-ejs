@@ -33,23 +33,29 @@
     
         <div class="form-floating form-label-left">
           <%= title %> 이용 약관 동의
-          <textarea id="tosRequired" class="form-control" style="height:100px;"></textarea>
+          <div class="form-floating" id="requiredTOS">
+            <textarea class="form-control requiredTOS" style="height:100px;"></textarea>
+            <div class="checkbox mb-3 form-label-left">
+              <label>
+                <input type="checkbox" value="register-tos"> 동의합니다. <span class="form-tos-required">(필수)</span>
+              </label>
+            </div>
+          </div>
         </div>
-        <div class="checkbox mb-3 form-label-left">
-          <label>
-            <input type="checkbox" value="register-tos"> 동의합니다. <span class="form-tos-required">(필수)</span>
-          </label>
-        </div>
+        
 
         <div class="form-floating form-label-left">
           <%= title %> 정보 수신 동의
-          <textarea id="tosSelection" class="form-control" style="height:100px;"></textarea>
+          <div class="form-floating" id="selectionTOS">
+            <textarea class="form-control selectionTOS" style="height:100px;"></textarea>
+            <div class="checkbox mb-3 form-label-left">
+              <label>
+                <input type="checkbox" value="register-tos"> 동의합니다. (선택)
+              </label>
+            </div>
+          </div>
         </div>
-        <div class="checkbox mb-3 form-label-left">
-          <label>
-            <input type="checkbox" value="register-tos"> 동의합니다. (선택)
-          </label>
-        </div>
+        
 
         <div class="row mb-3">
           <div class="col-12">
@@ -67,9 +73,9 @@
   let emailElem = document.getElementById("email");
   let passwordElem = document.getElementById("password");
   let passwordConfirmElem = document.getElementById("passwordConfirm");
-  let nicknameElem = document.getElementById("nicknameElem");
-  let tosRequired = document.getElementById("tosRequired")
-  let tosSelection = document.getElementById("tosSelection")
+  let nicknameElem = document.getElementById("nickname");
+  let requiredTOS = document.getElementById("requiredTOS")
+  let selectionTOS = document.getElementById("selectionTOS")
 
   let valid = {
     email: false,
@@ -82,7 +88,12 @@
   axios.get("/API/tos/required")
     .then(value => {
       loadTosRequired = true;
-      tosRequired.value = value;
+      console.log(value.data)
+      console.log(value.data.length)
+      value.data.forEach(element => {
+        
+      });
+      // tosRequired.value = value;
     })
     .catch(err => {
       loadTosRequired = false;
@@ -91,7 +102,7 @@
   axios.get("/API/tos/selection")
     .then(value => {
       loadTosSelection = true;
-      tosSelection.value = value;
+      // tosSelection.value = value;
     })
     .catch(err => {
       loadTosSelection = false;
