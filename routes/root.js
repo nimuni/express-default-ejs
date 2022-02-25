@@ -8,7 +8,7 @@ const fileRouter = require('./file/fileRouter');
 router.use('/file', fileRouter);
 const apiRouter = require('./API/apiRouter');
 router.use('/API', apiRouter);
-const viewsRouter = require('./views');
+const viewsRouter = require('./views/viewsRouter');
 router.use('/views', viewsRouter);
 
 router.get('/', function(req, res, next) {

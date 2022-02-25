@@ -9,16 +9,19 @@ const localConfig = { usernameField: 'email', passwordField: 'password' };
 const localVerify = async (email, password, done) => {
   try {
     const db = mongodb.getDb();
+    console.log(`passport / local, email:${email}, pw: ${password}`)
 
 
 		// 유저 아이디로 일치하는 유저 데이터 검색
-    db.collection("account").findOne({email: email}, (err, user) => {
+    db.collection("user").findOne({email: email}, (err, user) => {
       if(err) { 
         console.error(err) 
+        console.log(1)
         done(err);
       } else {
         // 검색된 유저 데이터가 없다면 에러 표시
         if (!user) {
+          console.log(2)
           done(null, false, { reason: '존재하지 않는 사용자 입니다.' });
           return;
         }
@@ -27,15 +30,18 @@ const localVerify = async (email, password, done) => {
 
         // 해쉬된 비밀번호가 같다면 유저 데이터 객체 전송
         if (compareResult) {
+          console.log(3)
           done(null, user);
           return;
         }
         // 비밀번호가 다를경우 에러 표시
+        console.log(4)
         done(null, false, { reason: '올바르지 않은 비밀번호 입니다.' });
       }
     })
   } catch (err) {
     console.error(err);
+    console.log(5)
     done(err);
   }
 };
@@ -51,7 +57,7 @@ const jwtVerify = async (jwtPayload, done) => {
     console.log(jwtPayload)
     const db = mongodb.getDb();
 
-    db.collection("account").findOne({email: jwtPayload.email}, (err, user) => {
+    db.collection("user").findOne({email: jwtPayload.email}, (err, user) => {
       if (user) {
         done(null, user);
         return;

@@ -5,8 +5,10 @@ const mongodb = require(process.cwd()+"/js/db/mongodb")
 const path = require('path');
 const multer = require(process.cwd()+"/js/multer/multer")
 
-const accountRouter = require("./accountRouter")
-router.use("/account", accountRouter)
+const userRouter = require("./userRouter")
+router.use("/user", userRouter);
+const tosRouter = require("./tosRouter")
+router.use("/tos", tosRouter);
 
 
 // CRUD 기본. RESTapi 종류 하단 참고.

@@ -1,5 +1,6 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 require('dotenv').config();
+// const mongodb = require(process.cwd()+"/js/db/mongodb")
 
 const getConnectionString = function(){
   if(process.env.MONGO_URI){
@@ -46,5 +47,6 @@ module.exports = {
   },
   getDb: function () {
     return dbConnection;
-  }
+  },
+  objectId: ObjectId
 };

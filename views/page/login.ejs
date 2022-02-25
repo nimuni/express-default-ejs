@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% const ROOT_DIR = process.cwd() %>
+    <%- include(ROOT_DIR + '/views/layout/include'); %>
+  </head>
+  <body class="text-center">
+    <header>
+      <%- include(ROOT_DIR + '/views/layout/header'); %>
+    </header>
+    <main class="form-signin">
+      <form>
+        <img class="mb-4" src="" alt="로고" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">로그인</h1>
+    
+        <div class="form-floating">
+          <input type="email" class="form-control" id="email" placeholder="name@example.com">
+          <label for="email">Email address</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control" id="password" placeholder="Password">
+          <label for="password">Password</label>
+        </div>
+    
+        <div class="checkbox mb-3">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-6">
+            <button id="loginBtn" class="w-100 btn btn-lg btn-primary" type="button">로그인</button>
+          </div>
+          <div class="col-6">
+            <button id="registerBtn" class="w-100 btn btn-lg btn-primary" type="button" href="/views/register">회원가입</button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="form-signup py-2">
+              <a id="findIDBtn">아이디 찾기</a> / <a id="findPWBtn">비밀번호 찾기</a>
+            </div>
+          </div>
+        </div>
+
+        <%- include(ROOT_DIR + '/views/layout/accountFooter'); %>
+      </form>
+    </main>
+  </body>
+</html>
+<script type="text/javascript">
+  let loginBtn = document.getElementById("loginBtn");
+  let registerBtn = document.getElementById("registerBtn");
+  let findIDBtn = document.getElementById("findIDBtn");
+  let findPWBtn = document.getElementById("findPWBtn");
+  let emailElem = document.getElementById("email");
+  let passwordElem = document.getElementById("password");
+
+  loginBtn.addEventListener("click", function(e){
+    console.log("click loginbtn")
+    let data = {};
+    data.email = emailElem.value;
+    data.password = passwordElem.value;
+    console.log(data);
+
+    axios.post("/API/user/login/local", data, { withCredentials: true, headers: {'Content-Type': 'application/json'}})
+      .then(response => {
+        console.log("로그인 성공")
+        console.log(response)
+      })
+      .catch(err => {
+        alert(err.response.data.reason)
+        console.error(err)
+      })
+  })
+
+  registerBtn.addEventListener("click", function(e){
+    location.href = "/views/register";
+  })
+  findIDBtn.addEventListener("click", function(e){
+    console.log("findIDBtn")
+  })
+  findPWBtn.addEventListener("click", function(e){
+    console.log("findPWBtn")
+  })
+</script>
+<style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.form-signup {
+  border: #cacaca 1px solid;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+}
+
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+</style>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% const ROOT_DIR = process.cwd() %>
+    <%- include(ROOT_DIR + '/views/layout/include'); %>
+  </head>
+  <body class="text-center">
+    <header>
+      <%- include(ROOT_DIR + '/views/layout/header'); %>
+    </header>
+    <main class="form-signin">
+      <form>
+        <img class="mb-4" src="" alt="로고" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">회원가입</h1>
+        
+    
+        <div class="form-floating input-group">
+          <input type="email" class="form-control form-register-top" id="email" placeholder="name@example.com">
+          <label for="email">Email address</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control form-register-middle" id="password" placeholder="Password">
+          <label for="password">비밀번호</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control form-register-middle" id="passwordConfirm" placeholder="Password">
+          <label for="passwordConfirm">비밀번호 확인</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control form-register-bottom" id="nickname" placeholder="Password">
+          <label for="nickname">닉네임</label>
+        </div>
+    
+        <div class="form-floating form-label-left">
+          <%= title %> 이용 약관 동의
+          <textarea id="tosRequired" class="form-control" style="height:100px;"></textarea>
+        </div>
+        <div class="checkbox mb-3 form-label-left">
+          <label>
+            <input type="checkbox" value="register-tos"> 동의합니다. <span class="form-tos-required">(필수)</span>
+          </label>
+        </div>
+
+        <div class="form-floating form-label-left">
+          <%= title %> 정보 수신 동의
+          <textarea id="tosSelection" class="form-control" style="height:100px;"></textarea>
+        </div>
+        <div class="checkbox mb-3 form-label-left">
+          <label>
+            <input type="checkbox" value="register-tos"> 동의합니다. (선택)
+          </label>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12">
+            <button id="registerBtn" class="w-100 btn btn-lg btn-primary" type="button">회원가입</button>
+          </div>
+        </div>
+
+        <%- include(ROOT_DIR + '/views/layout/accountFooter'); %>
+      </form>
+    </main>
+  </body>
+</html>
+<script type="text/javascript">
+  let registerBtn = document.getElementById("registerBtn");
+  let emailElem = document.getElementById("email");
+  let passwordElem = document.getElementById("password");
+  let passwordConfirmElem = document.getElementById("passwordConfirm");
+  let nicknameElem = document.getElementById("nicknameElem");
+  let tosRequired = document.getElementById("tosRequired")
+  let tosSelection = document.getElementById("tosSelection")
+
+  let valid = {
+    email: false,
+    nickname: false,
+    password: false,
+    loadTosRequired: false,
+    loadTosSelection: false,
+  }
+
+  axios.get("/API/tos/required")
+    .then(value => {
+      loadTosRequired = true;
+      tosRequired.value = value;
+    })
+    .catch(err => {
+      loadTosRequired = false;
+    })
+
+  axios.get("/API/tos/selection")
+    .then(value => {
+      loadTosSelection = true;
+      tosSelection.value = value;
+    })
+    .catch(err => {
+      loadTosSelection = false;
+    })
+
+  emailElem.addEventListener("focusout", function(e){
+    if(fn_valid_check_email(emailElem.value)){
+      console.log(1)
+    } else {
+      console.log(2)
+    }
+  })
+  passwordElem.addEventListener("focusout", function(e){
+    if(fn_valid_check_email(emailElem.value)){
+      console.log(1)
+    } else {
+      console.log(2)
+    }
+  })
+  passwordConfirmElem.addEventListener("focusout", function(e){
+    if(fn_valid_check_email(emailElem.value)){
+      console.log(1)
+    } else {
+      console.log(2)
+    }
+  })
+  nicknameElem.addEventListener("focusout", function(e){
+    if(fn_valid_check_email(emailElem.value)){
+      console.log(1)
+    } else {
+      console.log(2)
+    }
+  })
+
+  registerBtn.addEventListener("click", function(e){
+    // check valid
+    
+    let data = {};
+    data.email = emailElem.value;
+    data.password = passwordElem.value;
+    data.nickname = nicknameElem.value;
+    console.log(data);
+
+    axios.post("/API/user/login/local", data, { headers: {"Content-Type": "multipart/form-data"}})
+      .then(response => {
+        console.log("로그인 성공")
+        console.log(response)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+    
+  })
+</script>
+<style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 660px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-register-top {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-register-middle {
+  margin-bottom: -1px;
+  border-radius: 0;
+}
+.form-register-bottom {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-register-tos {
+  height: 300px;
+}
+.form-tos-required {
+  color: red;
+}
+.form-label-left {
+  text-align: left!important;
+}
+
+.form-signup {
+  border: #cacaca 1px solid;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+}
+
+.icon-red {
+  color: red;
+}
+.icon-green {
+  color: #55dd44;
+}
+
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+</style>

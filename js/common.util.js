@@ -1,5 +1,7 @@
 require('dotenv').config();
 const cryptoJs = require("crypto-js");
+const moment = require('moment-timezone');
+const TIMEZONE = "Asia/Seoul";
 /**
  * 참조시 const util = require(process.cwd()+ "/js/common.util.js")
  */
@@ -22,7 +24,34 @@ const fn_aes256_decrypt = function (data) {
   return result.toString();
 }
 
+const fn_valid_check_email = function(str){
+  let reg_email = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+  if(!reg_email.test(str)) { 
+    return false;     
+  } else {
+    return true
+  }
+} 
+const fn_valid_check_pw = function(str){
+  let reg_pw = /^[a-zA-Z0-9]{1,14}$/ 
+  return true;
+}
+const fn_get_date = function(timeStr, form=moment.defaultFormat){
+  if(!moment(timeStr).isValid()){
+    throw `timeString is invalid: ${timeStr}`;
+  }
+
+  if(timeStr){
+    return moment(timeStr).tz(TIMEZONE).format(form);
+  } else {
+    return moment().tz(TIMEZONE).format(form);
+  }
+}
+
 module.exports = {
   fn_aes256_encrypt,
-  fn_aes256_decrypt
+  fn_aes256_decrypt,
+  fn_valid_check_email,
+  fn_valid_check_pw,
+  fn_get_date
 };
