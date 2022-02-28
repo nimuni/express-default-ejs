@@ -10,6 +10,8 @@ require('dotenv').config();
 
 router.get('/', ppUtil.loginCheck("admin"), userController.selectAll);
 router.get('/:id', ppUtil.loginCheckInUserPage, userController.selectAll);
+router.get('/duplicate/email/:email', userController.duplicateCheck);
+router.get('/duplicate/nickname/:nickname', userController.duplicateCheck);
 router.post('/register', userController.register);
 router.put('/:id', ppUtil.loginCheckInUserPage, userController.updateOne);
 router.delete('/:id', ppUtil.loginCheckInUserPage, userController.deleteOne);

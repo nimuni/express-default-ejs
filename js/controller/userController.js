@@ -20,6 +20,29 @@ exports.selectOne = async function(req, res, next) {
     res.status(400).json({err: err})
   }
 }
+exports.duplicateCheck = async function(req, res, next) {
+  try {
+    let userSearch = {};
+
+    if(req.params.email) userSearch.email = req.params.email
+    if(req.params.nickname) userSearch.nickname = req.params.nickname
+
+    console.log("userSearch")
+    console.log(userSearch)
+
+    let result = await userService.selectOne(userSearch)
+    console.log("result")
+    console.log(result)
+    console.log(!!result)
+    if(!!result) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (err) {
+    res.status(400).json({err: err})
+  }
+}
 exports.register = async function(req, res, next) {
   try{
     const db = mongodb.getDb();

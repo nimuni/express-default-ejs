@@ -32,28 +32,30 @@
         </div>
     
         <div class="form-floating form-label-left">
-          <%= title %> 이용 약관 동의
-          <div class="form-floating" id="requiredTOS">
-            <textarea class="form-control requiredTOS" style="height:100px;"></textarea>
+          <h5><%= title %> 필수 약관 동의</h5>
+          <% for(var i = 0; i < requiredTos.length; i++) { %>
+            <%= requiredTos[i].title %>
+            <textarea class="form-control required-tOS" style="height:100px;"><%= requiredTos[i].content %></textarea>
             <div class="checkbox mb-3 form-label-left">
               <label>
-                <input type="checkbox" value="register-tos"> 동의합니다. <span class="form-tos-required">(필수)</span>
+                <input class="required-checkbox" id="required_<%= i %>" type="checkbox" value="<%= requiredTos[i]._id %>"> 동의합니다. <span class="form-tos-required">(필수)</span>
               </label>
             </div>
-          </div>
+          <% } %>
         </div>
         
 
         <div class="form-floating form-label-left">
-          <%= title %> 정보 수신 동의
-          <div class="form-floating" id="selectionTOS">
-            <textarea class="form-control selectionTOS" style="height:100px;"></textarea>
+          <h5><%= title %> 선택 약관 동의</h5>
+          <% for(var i = 0; i < selectionTos.length; i++) { %>
+            <%= selectionTos[i].title %>
+            <textarea class="form-control selection-tos" style="height:100px;"><%= selectionTos[i].content %></textarea>
             <div class="checkbox mb-3 form-label-left">
               <label>
-                <input type="checkbox" value="register-tos"> 동의합니다. (선택)
+                <input class="selection-checkbox" id="selection_<%= i %>" type="checkbox" value="<%= selectionTos[i]._id %>"> 동의합니다. (선택)
               </label>
             </div>
-          </div>
+          <% } %>
         </div>
         
 
@@ -85,55 +87,79 @@
     loadTosSelection: false,
   }
 
-  axios.get("/API/tos/required")
-    .then(value => {
-      loadTosRequired = true;
-      console.log(value.data)
-      console.log(value.data.length)
-      value.data.forEach(element => {
-        
-      });
-      // tosRequired.value = value;
-    })
-    .catch(err => {
-      loadTosRequired = false;
-    })
-
-  axios.get("/API/tos/selection")
-    .then(value => {
-      loadTosSelection = true;
-      // tosSelection.value = value;
-    })
-    .catch(err => {
-      loadTosSelection = false;
-    })
-
-  emailElem.addEventListener("focusout", function(e){
-    if(fn_valid_check_email(emailElem.value)){
-      console.log(1)
+  const checkEmail = async function(){
+    try {
+      if(fn_valid_check_email(emailElem.value)){
+        let result = await axios.get("/API/user/duplicate/email/"+emailElem.value)
+        return !result.data
+      } else {
+        return false;
+      }
+    } catch (err) {
+      alert("서버 통신에 문제가 있습니다.")
+      console.error(err)
+      return false;
+    }
+  }
+  const checkNickname = async function(){
+    try {
+      if(fn_valid_nickname(nicknameElem.value)){
+        let result = await axios.get("/API/user/duplicate/nickname/"+nicknameElem.value)
+        console.log("??:"+!result.data)
+        return !result.data
+      } else {
+        console.log("??:"+false)
+        return false;
+      }
+    } catch (err) {
+      alert("서버 통신에 문제가 있습니다.")
+      console.error(err)
+      return false;
+    }
+  }
+  const checkPassword = function(){
+    if (passwordElem.value === passwordConfirmElem.value) {
+      // 패스워드 맞는지 그림으로 표기. 클래스?를 바꿔주던지
+      valid.nickname = true;
+      return true;
     } else {
-      console.log(2)
+      // 패스워드 맞는지 그림으로 표기. 클래스?를 바꿔주던지
+      valid.nickname = false;
+      return false;
+    }
+  }
+  emailElem.addEventListener("focusout", async function(e){
+    if(await checkEmail(emailElem.value)){
+      console.log("email available");
+      valid.email = true;
+    } else {
+      console.log("email unavailable");
+      valid.email = false;
     }
   })
-  passwordElem.addEventListener("focusout", function(e){
-    if(fn_valid_check_email(emailElem.value)){
-      console.log(1)
+  passwordElem.addEventListener("focusout", async function(e){
+    if(await checkPassword(passwordElem.value)){
+      console.log("password 1");
     } else {
-      console.log(2)
+      console.log("password 2");
     }
   })
-  passwordConfirmElem.addEventListener("focusout", function(e){
-    if(fn_valid_check_email(emailElem.value)){
-      console.log(1)
+  passwordConfirmElem.addEventListener("focusout", async function(e){
+    if(await checkPassword(passwordElem.value)){
+      console.log("password available");
     } else {
-      console.log(2)
+      console.log("password unavailable");
     }
   })
-  nicknameElem.addEventListener("focusout", function(e){
-    if(fn_valid_check_email(emailElem.value)){
-      console.log(1)
+  nicknameElem.addEventListener("focusout", async function(e){
+    if(await checkNickname(nicknameElem.value)){
+      let result = await checkNickname(nicknameElem.value)
+      console.log("nickname available");
+      console.log("??!!:"+result);
+      valid.nickname = true;
     } else {
-      console.log(2)
+      console.log("nickname unavailable");
+      valid.nickname = false;
     }
   })
 

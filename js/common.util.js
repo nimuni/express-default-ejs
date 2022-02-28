@@ -33,8 +33,14 @@ const fn_valid_check_email = function(str){
   }
 } 
 const fn_valid_check_pw = function(str){
-  let reg_pw = /^[a-zA-Z0-9]{1,14}$/ 
-  return true;
+  /* let reg_pw = /^[a-zA-Z0-9]{1,14}$/ 
+  return true; */
+  console.log(`fn_valid_check_pw str.length:${str.length}`)
+  if(str.length > 4 && str.length <= 14){
+    return true;
+  } else {
+    return false;
+  }
 }
 const fn_get_date = function(timeStr, form=moment.defaultFormat){
   if(!moment(timeStr).isValid()){
@@ -47,11 +53,21 @@ const fn_get_date = function(timeStr, form=moment.defaultFormat){
     return moment().tz(TIMEZONE).format(form);
   }
 }
+const fn_valid_nickname = function(str){
+  let reg_nickname = /^([ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+){2,10}$/;
+  console.log(`str.length:${str.length}`)
+  if(!reg_nickname.test(str)) { 
+    return false;     
+  } else {
+    return true
+  }
+}
 
 module.exports = {
   fn_aes256_encrypt,
   fn_aes256_decrypt,
   fn_valid_check_email,
   fn_valid_check_pw,
-  fn_get_date
+  fn_get_date,
+  fn_valid_nickname
 };
