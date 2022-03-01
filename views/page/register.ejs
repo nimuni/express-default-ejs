@@ -14,28 +14,40 @@
         <h1 class="h3 mb-3 fw-normal">회원가입</h1>
         
     
-        <div class="form-floating input-group">
-          <input type="email" class="form-control form-register-top" id="email" placeholder="name@example.com">
+        <div class="form-floating">
+          <input type="email" class="form-control form-register-input" id="email" placeholder="name@example.com">
           <label for="email">Email address</label>
+          <div class="invalid-tooltip">
+            이메일 형식으로 작성해주세요 ex) abc@abc.abc
+          </div>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control form-register-middle" id="password" placeholder="Password">
+          <input type="password" class="form-control form-register-input" id="password" placeholder="Password">
           <label for="password">비밀번호</label>
+          <div class="invalid-tooltip">
+            6자 이상 14자 미만으로 작성해주세요
+          </div>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control form-register-middle" id="passwordConfirm" placeholder="Password">
+          <input type="password" class="form-control form-register-input" id="passwordConfirm" placeholder="Password">
           <label for="passwordConfirm">비밀번호 확인</label>
+          <div class="invalid-tooltip">
+            비밀번호가 일치하지 않습니다
+          </div>
         </div>
         <div class="form-floating">
-          <input type="text" class="form-control form-register-bottom" id="nickname" placeholder="Password">
+          <input type="text" class="form-control form-register-input" id="nickname" placeholder="Password">
           <label for="nickname">닉네임</label>
+          <div class="invalid-tooltip">
+            2자 이상 10자 미만으로 작성해주세요
+          </div>
         </div>
     
         <div class="form-floating form-label-left">
           <h5><%= title %> 필수 약관 동의</h5>
           <% for(var i = 0; i < requiredTos.length; i++) { %>
             <%= requiredTos[i].title %>
-            <textarea class="form-control required-tOS" style="height:100px;"><%= requiredTos[i].content %></textarea>
+            <textarea class="form-control required-tOS" style="height:100px;" readonly><%= requiredTos[i].content %></textarea>
             <div class="checkbox mb-3 form-label-left">
               <label>
                 <input class="required-checkbox" id="required_<%= i %>" type="checkbox" value="<%= requiredTos[i]._id %>"> 동의합니다. <span class="form-tos-required">(필수)</span>
@@ -49,7 +61,7 @@
           <h5><%= title %> 선택 약관 동의</h5>
           <% for(var i = 0; i < selectionTos.length; i++) { %>
             <%= selectionTos[i].title %>
-            <textarea class="form-control selection-tos" style="height:100px;"><%= selectionTos[i].content %></textarea>
+            <textarea class="form-control selection-tos" style="height:100px;" readonly><%= selectionTos[i].content %></textarea>
             <div class="checkbox mb-3 form-label-left">
               <label>
                 <input class="selection-checkbox" id="selection_<%= i %>" type="checkbox" value="<%= selectionTos[i]._id %>"> 동의합니다. (선택)
@@ -76,17 +88,26 @@
   let passwordElem = document.getElementById("password");
   let passwordConfirmElem = document.getElementById("passwordConfirm");
   let nicknameElem = document.getElementById("nickname");
-  let requiredTOS = document.getElementById("requiredTOS")
-  let selectionTOS = document.getElementById("selectionTOS")
+  let requiredTOSCheckboxes = document.getElementsByClassName("required-checkbox");
+  let selectionTOSCheckboxes = document.getElementsByClassName("selection-checkbox");
 
   let valid = {
     email: false,
     nickname: false,
     password: false,
-    loadTosRequired: false,
-    loadTosSelection: false,
+    passwordConfirm: false,
+    tosRequired: false,
   }
 
+  const showValidation = function(elem, valid){
+    if(valid){
+      elem.classList.remove("is-invalid");
+      elem.classList.add("is-valid");
+    } else {
+      elem.classList.remove("is-valid");
+      elem.classList.add("is-invalid");
+    }
+  }
   const checkEmail = async function(){
     try {
       if(fn_valid_check_email(emailElem.value)){
@@ -103,9 +124,11 @@
   }
   const checkNickname = async function(){
     try {
+      if(nicknameElem.value == "") return false;
       if(fn_valid_nickname(nicknameElem.value)){
         let result = await axios.get("/API/user/duplicate/nickname/"+nicknameElem.value)
         console.log("??:"+!result.data)
+        valid.password = !result.data;
         return !result.data
       } else {
         console.log("??:"+false)
@@ -118,68 +141,111 @@
     }
   }
   const checkPassword = function(){
-    if (passwordElem.value === passwordConfirmElem.value) {
+    if (fn_valid_check_pw(passwordElem.value)) {
       // 패스워드 맞는지 그림으로 표기. 클래스?를 바꿔주던지
-      valid.nickname = true;
+      valid.password = true;
       return true;
     } else {
       // 패스워드 맞는지 그림으로 표기. 클래스?를 바꿔주던지
-      valid.nickname = false;
+      valid.password = false;
+      return false;
+    }
+  }
+  const checkPasswordConfirm = function(){
+    if (passwordElem.value === passwordConfirmElem.value) {
+      // 패스워드 맞는지 그림으로 표기. 클래스?를 바꿔주던지
+      valid.passwordConfirm = true;
+      return true;
+    } else {
+      // 패스워드 맞는지 그림으로 표기. 클래스?를 바꿔주던지
+      valid.passwordConfirm = false;
       return false;
     }
   }
   emailElem.addEventListener("focusout", async function(e){
     if(await checkEmail(emailElem.value)){
       console.log("email available");
+      showValidation(emailElem, true)
       valid.email = true;
     } else {
       console.log("email unavailable");
+      showValidation(emailElem, false)
       valid.email = false;
     }
   })
   passwordElem.addEventListener("focusout", async function(e){
     if(await checkPassword(passwordElem.value)){
       console.log("password 1");
+      showValidation(passwordElem, true)
+      valid.password = true;
     } else {
       console.log("password 2");
+      showValidation(passwordElem, false)
+      valid.password = false;
     }
   })
   passwordConfirmElem.addEventListener("focusout", async function(e){
-    if(await checkPassword(passwordElem.value)){
+    if(await checkPasswordConfirm()){
       console.log("password available");
+      showValidation(passwordConfirmElem, true)
+      valid.passwordConfirm = true;
     } else {
       console.log("password unavailable");
+      showValidation(passwordConfirmElem, false)
+      valid.passwordConfirm = false;
     }
   })
   nicknameElem.addEventListener("focusout", async function(e){
     if(await checkNickname(nicknameElem.value)){
       let result = await checkNickname(nicknameElem.value)
       console.log("nickname available");
-      console.log("??!!:"+result);
+      showValidation(nicknameElem, true);
       valid.nickname = true;
     } else {
       console.log("nickname unavailable");
+      showValidation(nicknameElem, false);
       valid.nickname = false;
     }
   })
+  
 
   registerBtn.addEventListener("click", function(e){
     // check valid
-    
     let data = {};
     data.email = emailElem.value;
     data.password = passwordElem.value;
     data.nickname = nicknameElem.value;
-    console.log(data);
+    data.TOSId = [];
+    Array.from(requiredTOSCheckboxes).forEach(item => {
+      if(item.checked) {
+        data.TOSId.push(item.value);
+      }
+    })
+    Array.from(selectionTOSCheckboxes).forEach(item => {
+      if(item.checked) data.TOSId.push(item.value);
+    })
+    
+    valid.tosRequired = Array.from(requiredTOSCheckboxes).every(item => item.checked === true);
+    let validCheck = Object.values(valid).every(value => value === true);
+    console.log("valid")
+    console.log(valid)
+    console.log(`validCheck = ${validCheck}`)
+    console.log("data")
+    console.log(data)
 
-    axios.post("/API/user/login/local", data, { headers: {"Content-Type": "multipart/form-data"}})
-      .then(response => {
-        console.log("로그인 성공")
-        console.log(response)
-      })
-      .catch(err => {
-        console.error(err)
-      })
+    if(validCheck){
+      axios.post("/API/user/register", data)
+        .then(response => {
+          console.log("회원가입 성공")
+          console.log(response)
+        })
+        .catch(err => {
+          console.error(err.response.data.err)
+        })
+    } else {
+      alert("invalid")
+    }
+
     
   })
 </script>
@@ -213,12 +279,10 @@ body {
 }
 
 .form-register-top {
-  margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 .form-register-middle {
-  margin-bottom: -1px;
   border-radius: 0;
 }
 .form-register-bottom {
@@ -226,6 +290,11 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+.form-register-input {
+  margin-bottom: 5px;
+}
+
+
 .form-register-tos {
   height: 300px;
 }

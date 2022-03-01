@@ -45,6 +45,8 @@ exports.duplicateCheck = async function(req, res, next) {
 }
 exports.register = async function(req, res, next) {
   try{
+    console.log("call register")
+    console.log(req.body)
     const db = mongodb.getDb();
 
     let user = {
@@ -58,26 +60,32 @@ exports.register = async function(req, res, next) {
       isStop: false,
       stopReason: ""
     }
+    console.log("유저정보")
+    console.log(user)
 
     const validCheck = function(user) {
-      if(util.fn_valid_check_email(user.email)) 
+      if(!util.fn_valid_check_email(user.email)) {
         res.status(400).json({err: [{msg: "email 형식이 맞지 않습니다."}]})
-      if(!user.agreeTOSId)
+      }
+      if(!user.agreeTOSId){
         res.status(400).json({err: [{msg: "이용약관 동의 형식이 맞지 않습니다."}]})
+      }
     }
     validCheck(user);
+    console.log("validcheck 클리어")
 
     let tempUser = await db.collection("user").findOne({email: user.email});
     if(tempUser) {
       console.log("user exist")
       res.status(400).json({err: [{msg: "email already exists"}]})
     } else {
-      console.log("user didnt exist")
+      console.log("user not exist")
       db.collection("user").insertOne(user)
         .then(result => {
           console.log("insert result")
           console.log(result)
-          res.redirect('/views')
+          // res.redirect('/views/login')
+          res.send(result)
         }).catch(err => {
           console.log("insert err")
           console.error(err)
@@ -86,6 +94,7 @@ exports.register = async function(req, res, next) {
     }
 
   } catch(err) {
+    console.log(err)
     res.status(400).send(err)
   }
 }
