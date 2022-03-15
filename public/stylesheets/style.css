@@ -10,3 +10,11 @@ a {
 .testborder {
   border: 1px solid red;
 }
+
+.show-elem {
+  display: show;
+}
+
+.hide-elem {
+  display: none;
+}

@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 const tosService = require(process.cwd()+ '/js/service/tosService')
+const passport = require('passport');
 
 // 페이지 렌더링. 이 경우에는 페이지를 리턴한다.
 // res.render(페이지 원본 위치, { 변수명: 변수값 });
 router.get('/', (req, res, next) => {
-  res.render('index', { title: process.env.TITLE, user: req.user });
+  res.render('index', { title: process.env.TITLE});
 });
 
 router.get("/file", (req, res, next) => {
@@ -28,5 +29,13 @@ router.get("/register", async (req, res) => {
   let selectionTos = await tosService.selectAll("selection");
   
   res.render("./page/register", {title: process.env.TITLE, user: req.user, requiredTos:requiredTos, selectionTos:selectionTos});
+})
+
+router.get("/userInfo", passport.authenticate('jwt', { session: false }), async (req, res) => {
+  res.send(req.user);
+})
+
+router.get("/settings", passport.authenticate('jwt2', { session: false }), async (req, res, next) => {
+  res.render("./page/settings", {title: process.env.TITLE, user: req.user})
 })
 module.exports = router;

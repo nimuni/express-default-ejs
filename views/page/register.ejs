@@ -236,8 +236,11 @@
     if(validCheck){
       axios.post("/API/user/register", data)
         .then(response => {
-          console.log("회원가입 성공")
-          console.log(response)
+          if(response.status === 200){
+            window.location.href = "/views/login";
+          } else {
+            alert(response.data.err);
+          }
         })
         .catch(err => {
           console.error(err.response.data.err)

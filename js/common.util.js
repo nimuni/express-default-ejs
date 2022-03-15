@@ -22,7 +22,7 @@ const fn_aes256_encrypt = function (data) {
 
 const fn_aes256_decrypt = function (data) {
   let bytes = cryptoJs.AES.decrypt(data, process.env.SECRET_KEY);
-  let result = JSON.parse(bytes.toString(cryptoJs.enc.Utf8))
+  let result = bytes.toString(cryptoJs.enc.Utf8)
   return result.toString();
 }
 

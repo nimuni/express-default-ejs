@@ -1,31 +1,60 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container-fluid">
     <!-- 타이틀 -->
-    <a class="navbar-brand" href="#"><%= title %></a>
+    <a class="navbar-brand" href="/views"><%= title %></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home</a>
+          <a class="nav-link" id="homeLink" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="/views">Link</a>
         </li>
         <li class="nav-item">
           <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/views/settings">setting</a>
         </li>
       </ul>
     </div>
     <div class="navbar-copllapse">
       <ul class="navbar-nav mr-auto">
-        <% if(user){ %>
-        <li class="nav-item"><a class="nav-link" href="#">Welcome, <%= user %></a></li>
-        <% } else { %>
-          <li class="nav-item"><a class="nav-link" href="/views/login">로그인하세요</a></li>
-        <% } %>
+        <li class="nav-item"><a class="nav-link" id="userNickname">로그인하세요</a></li>
+        <li class="nav-item"><a class="nav-link" id="logout">Logout</a></li>
       </ul>
     </div>
   </div>
+  <script>
+    let userNicknameElem = document.getElementById("userNickname");
+    let logoutElem = document.getElementById("logout");
+    let homeLinkElem = document.getElementById("homeLink");
+
+    logoutElem.addEventListener("click", function(e){
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      window.location.href = "/views/login"
+    })
+
+    if(localStorage.user){
+      logoutElem.classList.remove("hide-elem");
+      logoutElem.classList.add("show-elem");
+      let user = JSON.parse(localStorage.user);
+      userNicknameElem.innerHTML = user.nickname;
+      userNicknameElem.href = "/views/userInfo";
+    } else {
+      logoutElem.classList.add("hide-elem");
+      logoutElem.classList.remove("show-elem");
+      userNicknameElem.innerHTML = "로그인하세요";
+      userNicknameElem.href = "/views/login";
+    }
+
+    homeLinkElem.addEventListener("click", async function(e){
+      let result = await axios.get("/views/userInfo")
+      console.log(result)
+    })
+  </script>
 </nav>

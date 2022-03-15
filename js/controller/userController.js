@@ -53,6 +53,7 @@ exports.register = async function(req, res, next) {
       insertDate: util.fn_get_date(),
       updateDate: util.fn_get_date(),
       email: req.body.email,
+      nickname: req.body.nickname,
       password: util.fn_aes256_encrypt(req.body.password),
       auth: "user",
       agreeTOSId: req.body.TOSId,
