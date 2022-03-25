@@ -31,11 +31,13 @@ router.get("/register", async (req, res) => {
   res.render("./page/register", {title: process.env.TITLE, user: req.user, requiredTos:requiredTos, selectionTos:selectionTos});
 })
 
-router.get("/userInfo", passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.get("/userInfo", async (req, res) => {
+  console.log("call /userInfo")
+  console.log(req.user)
   res.send(req.user);
 })
 
-router.get("/settings", passport.authenticate('jwt2', { session: false }), async (req, res, next) => {
+router.get("/settings", async (req, res, next) => {
   res.render("./page/settings", {title: process.env.TITLE, user: req.user})
 })
 module.exports = router;

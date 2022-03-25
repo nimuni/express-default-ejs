@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -9,6 +10,7 @@ const TIMEZONE = "Asia/Seoul";
 const rootRouter = require('./routes/root');
 
 const app = express();
+const session = require('express-session')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -17,10 +19,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 
 // passport 설정
+app.use(session({
+  key: "sid",
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, maxAge : (1000 * 60 * 60 * 24) }
+}))
 const passport = require('passport');
 const passportConfig = require('./js/passport/passport');
-app.use(passport.initialize());
 passportConfig();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

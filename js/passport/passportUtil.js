@@ -24,7 +24,7 @@ module.exports = {
   loginCheck: function(auth) {
     return function(req, res, next) {
       if (typeof req.user == "undefined" || req.user == "") {
-        res.redirect('/kailos/client/Login')
+        res.redirect('/views/login')
       } else {
         console.log(`user name = ${JSON.stringify(req.user)}`)
         if(auth){

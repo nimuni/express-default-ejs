@@ -45,6 +45,17 @@
           </div>
         </div>
 
+        <div class="row mb-3">
+          <div class="col-12">
+            <!-- <form method="GET" action="/auth/google">
+              <button id="google_login_btn" type="submit"></button>
+            </form> -->
+            <form method="get" action="/auth/google">
+              <button id="google_login_btn" type="submit"></button>
+            </form>
+          </div>
+        </div>
+
         <%- include(ROOT_DIR + '/views/layout/accountFooter'); %>
       </form>
     </main>
@@ -65,7 +76,7 @@
     data.password = passwordElem.value;
     console.log(data);
 
-    axios.post("/API/user/login/local", data, { withCredentials: true, headers: {'Content-Type': 'application/json'}})
+    axios.post("/auth/login/local", data, { withCredentials: true, headers: {'Content-Type': 'application/json'}})
       .then(response => {
         console.log("로그인 성공")
         console.log(response)
@@ -135,6 +146,15 @@ body {
   border: #cacaca 1px solid;
   border-radius: 0.3rem;
   font-size: 0.75rem;
+}
+
+#google_login_btn {
+  background: url("/images/google_signin_buttons/web/1x/btn_google_signin_dark_normal_web.png")
+    no-repeat;
+  background-size: 100% 100%;
+  width: 200px;
+  height: 50px;
+  border: 0;
 }
 
 .bd-placeholder-img {

@@ -5,6 +5,9 @@ const util = require(process.cwd()+ "/js/common.util.js")
 const { ExtractJwt, Strategy: JWTStrategy } = require('passport-jwt');
 const tokenService = require(process.cwd() + '/js/service/tokenService');
 const userService = require(process.cwd()+ '/js/service/userService')
+const { OAuth2Strategy } = require('passport-oauth')
+const GoogleStrategy = require("passport-google-oauth2").Strategy;
+require('dotenv').config();
 
 const localConfig = { usernameField: 'email', passwordField: 'password' };
 
@@ -43,71 +46,56 @@ const localVerify = async (email, password, done) => {
   }
 };
 
-const JWTConfig = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.SECRET_KEY,
-};
-
-const jwtVerify = async (jwtPayload, done) => {
-  try{
-    console.log("call jwtVerify")
-    console.log(jwtPayload)
-    const db = mongodb.getDb();
-
-    db.collection("user").findOne({email: jwtPayload.email}, (err, user) => {
-      if (user) {
-        done(null, user);
-        return;
-      }
-      // 유저 데이터가 없을 경우 에러 표시
-      done(null, false, { reason: '올바르지 않은 인증정보 입니다.' });
-    })
-  } catch(err) {
-    console.error(err)
-    done(err);
-  }
+const oauthGoogleConfig = {
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost/auth/google/callback",
+  passReqToCallback: true,
 }
-
-const JWTConfig2 = {
-  jwtFromRequest: ExtractJwt.fromExtractors([
-    (req) => {
-      console.log(1)
-      console.log(req.cookies.accessToken)
-      console.log(req.cookies.refreshToken)
-      return { accessToken: req.cookies.accessToken, refreshToken: req.cookies.refreshToken };
-    }
-  ]),
-  secretOrKey: process.env.SECRET_KEY,
-};
-const jwtVerify2 = async (jwtPayloadObject, done) => {
-  try{
-    console.log("call jwtVerify2")
-    console.log(jwtPayload)
-    const db = mongodb.getDb();
-    const { accessToken, refreshToken } = jwtPayloadObject
-    console.log("accessToken")
-    console.log(accessToken)
-    console.log("refreshToken")
-    console.log(refreshToken)
-
-    db.collection("user").findOne({email: jwtPayload.email}, (err, user) => {
-      if (user) {
-        done(null, user);
-        return;
-      } else {
-        // 유저 데이터가 없을 경우 에러 표시
-        done(null, false, { reason: '올바르지 않은 인증정보 입니다.' });
-      }
-    })
-  } catch(err) {
-    console.error(err)
-    done(err);
+const oauthGoogleVerify = async function (request, accessToken, refreshToken, profile, done) {
+  try {
+    console.log("profile in oauthGoogleVerify")
+    console.log(profile);
+    let search = { email:profile.email }
+    let user = await userService.selectOne(search)
+    delete user.password;
+    console.log("call oauthGoogleVerify")
+    console.log(request);
+    console.log(accessToken);
+    console.log(refreshToken);
+    console.log(profile);
+    console.log(user);
+    
+    return done(err, profile);
+  } catch (err) {
+    return done(err, profile);
   }
 }
 
 module.exports = () => {
+  // login이 최초로 성공했을 때만 호출되는 함수
+  // done(null, user.id)로 세션을 초기화 한다.
+  passport.serializeUser(function (user, done) {
+    done(null, user.email);
+  });
+
+  // 사용자가 페이지를 방문할 때마다 호출되는 함수
+  // done(null, id)로 사용자의 정보를 각 request의 user 변수에 넣어준다.
+  passport.deserializeUser(async function (email, done) {
+    try {
+      let search = {email: email}
+      let user = await userService.selectOne(search)
+      delete user.password;
+      done(null, user);
+    } catch (err) {
+      done(err, null)
+    }
+  });
+
+
   passport.use('local', new LocalStrategy(localConfig, localVerify));
-  passport.use('jwt', new JWTStrategy(JWTConfig, jwtVerify));
-  passport.use('jwt2', new JWTStrategy(JWTConfig2, jwtVerify2));
+
+  passport.use(new GoogleStrategy(oauthGoogleConfig, oauthGoogleVerify))
+  
 };
 
