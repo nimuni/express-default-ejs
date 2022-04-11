@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% const ROOT_DIR = process.cwd() %>
+    <%- include(ROOT_DIR + '/views/layout/include'); %>
+  </head>
+  <body class="text-center">
+    <header>
+      <%- include(ROOT_DIR + '/views/layout/header'); %>
+    </header>
+    <main style="padding-top: 56px;" class="container">
+      <article class="my-3">
+        <div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">이메일</th>
+                <th scope="col">닉네임</th>
+                <th scope="col">사용</th>
+                <th scope="col">정지</th>
+                <th scope="col">권한</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let i=0; i<data.length; i++){ %>
+                <tr>
+                  <td><%= data[i].email %></td>
+                  <td><%= data[i].nickname %></td>
+                  <td><%= data[i].isUse %></td>
+                  <td><%= data[i].isStop %></td>
+                  <td><%= data[i].auth === "admin" ? "관리자" : "사용자" %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous" onclick="previousPage()">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">이전</span>
+                </a>
+              </li>
+              <% for(var i=startPage; i<=endPage; i++){ %>
+                <li class="page-item"><a class="page-link" href="#" onclick="movePage(<%= i %>)"><%= i %></a></li>
+              <% } %>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next" onclick="nextPage()">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">다음</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </article>
+      <script>
+        movePage = function(page){
+          alert(page)
+        }
+        previousPage = function(){
+          let startPage = <%= startPage %>;
+          startPage < 10 ? movePage(1) : movePage(startPage-10);
+        }
+        nextPage = function(){
+          let endPage = <%= endPage %>;
+          let totalPage = <%= totalPage %>;
+          endPage < totalPage-10 ? movePage(startPage+10) : movePage(endPage);
+        }
+      </script>
+    </main>
+  </body>
+  <footer>
+    <%- include(ROOT_DIR + '/views/layout/footer'); %>
+  </footer>
+</html>

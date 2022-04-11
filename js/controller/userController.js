@@ -11,6 +11,20 @@ exports.selectAll = async function(req, res, next) {
     res.status(400).json({err: err})
   }
 }
+exports.selectPage = async function(req, res, next) {
+  try {
+    let search, pageNumber, listCount;
+    pageNumber = 1;
+    listCount = 10;
+    console.log("in controller")
+    console.log(req.params.pageNumber)
+    console.log(req.params.listCount)
+
+    res.send(await userService.selectPage(search, pageNumber, listCount));
+  } catch (err) {
+    res.status(400).json({err: err})
+  }
+}
 exports.selectOne = async function(req, res, next) {
   try {
     let userSearch = { '_id': mongodb.objectId(req.params.id)} 
