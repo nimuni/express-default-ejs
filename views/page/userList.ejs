@@ -23,7 +23,7 @@
             </thead>
             <tbody>
               <% for(let i=0; i<data.length; i++){ %>
-                <tr>
+                <tr onclick="moveDetail('<%= data[i]._id %>')">
                   <td><%= data[i].email %></td>
                   <td><%= data[i].nickname %></td>
                   <td><%= data[i].isUse %></td>
@@ -44,7 +44,7 @@
                 </a>
               </li>
               <% for(var i=startPage; i<=endPage; i++){ %>
-                <li class="page-item"><a class="page-link" href="#" onclick="movePage(<%= i %>)"><%= i %></a></li>
+                <li class="page-item"><a class="page-link" href="#" onclick="movePage('<%= i %>')"><%= i %></a></li>
               <% } %>
               <li class="page-item">
                 <a class="page-link" href="#" aria-label="Next" onclick="nextPage()">
@@ -57,16 +57,19 @@
         </div>
       </article>
       <script>
-        movePage = function(page){
-          alert(page)
+        moveDetail = function(id){
+          location.href = "/views/userInfo/" + id;
+        }
+        movePage = function(id){
+          location.href = "/views/userList/" + id;
         }
         previousPage = function(){
-          let startPage = <%= startPage %>;
+          let startPage = Number('<%= startPage %>');
           startPage < 10 ? movePage(1) : movePage(startPage-10);
         }
         nextPage = function(){
-          let endPage = <%= endPage %>;
-          let totalPage = <%= totalPage %>;
+          let endPage = Number('<%= endPage %>');
+          let totalPage = Number('<%= totalPage %>');
           endPage < totalPage-10 ? movePage(startPage+10) : movePage(endPage);
         }
       </script>

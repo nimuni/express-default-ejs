@@ -1,6 +1,19 @@
+main {
+  min-height: 800px;
+}
 body {
   /* padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; */
+}
+body.with-nav {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 a {
@@ -17,4 +30,8 @@ a {
 
 .hide-elem {
   display: none;
+}
+
+.background-whitesmoke {
+  background-color: whitesmoke;
 }

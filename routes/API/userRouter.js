@@ -10,12 +10,12 @@ const tokenService = require(process.cwd() + '/js/service/tokenService');
 require('dotenv').config();
 
 router.get('/all', userController.selectAll);
-router.get('/id/:id', userController.selectOne);
 router.get('/page/:pageNumber/:listCount', userController.selectPage);
+router.get('/id/:id', userController.selectOne);
+router.put('/id/:id', userController.updateOne);
+router.delete('/id/:id', userController.deleteOne);
 router.get('/duplicate/email/:email', userController.duplicateCheck);
 router.get('/duplicate/nickname/:nickname', userController.duplicateCheck);
 router.post('/register', userController.register);
-router.put('/id/:id', userController.updateOne);
-router.delete('/id/:id', userController.deleteOne);
 
 module.exports = router;

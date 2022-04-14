@@ -23,38 +23,20 @@
     </div>
     <div class="navbar-copllapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link" id="userNickname">로그인하세요</a></li>
-        <li class="nav-item"><a class="nav-link" id="logout">Logout</a></li>
+        <% if (user) { %>
+          <li class="nav-item"><a class="nav-link" href="/views/myPage"><%= user.nickname %></a></li>
+          <li class="nav-item"><a class="nav-link" href="/views/logout">Logout</a></li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/views/login">로그인하세요</a></li>
+        <% } %>
       </ul>
     </div>
   </div>
   <script>
-    let userNicknameElem = document.getElementById("userNickname");
     let logoutElem = document.getElementById("logout");
-    let homeLinkElem = document.getElementById("homeLink");
-
     logoutElem.addEventListener("click", function(e){
       localStorage.removeItem("token")
-      localStorage.removeItem("user")
-      window.location.href = "/views/login"
-    })
-
-    if(localStorage.user){
-      logoutElem.classList.remove("hide-elem");
-      logoutElem.classList.add("show-elem");
-      let user = JSON.parse(localStorage.user);
-      userNicknameElem.innerHTML = user.nickname;
-      userNicknameElem.href = "/views/userInfo";
-    } else {
-      logoutElem.classList.add("hide-elem");
-      logoutElem.classList.remove("show-elem");
-      userNicknameElem.innerHTML = "로그인하세요";
-      userNicknameElem.href = "/views/login";
-    }
-
-    homeLinkElem.addEventListener("click", async function(e){
-      let result = await axios.get("/views/userInfo")
-      console.log(result)
+      window.location.href = "/views/logout"
     })
   </script>
 </nav>

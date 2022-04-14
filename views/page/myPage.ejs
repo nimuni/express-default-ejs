@@ -4,13 +4,16 @@
     <% const ROOT_DIR = process.cwd() %>
     <%- include(ROOT_DIR + '/views/layout/include'); %>
   </head>
-  <body class="text-center">
+  <body class="text-center with-nav">
     <header>
       <%- include(ROOT_DIR + '/views/layout/header'); %>
     </header>
     <main>
-      <div>1234</div>
-      <div id="test"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4"></div>
+        </div>
+      </div>
     </main>
   </body>
   <!-- FOOTER -->
