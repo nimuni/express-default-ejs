@@ -34,9 +34,15 @@
   </div>
   <script>
     let logoutElem = document.getElementById("logout");
-    logoutElem.addEventListener("click", function(e){
-      localStorage.removeItem("token")
-      window.location.href = "/views/logout"
-    })
+    if(logoutElem){
+      logoutElem.addEventListener("click", function(e){
+        localStorage.removeItem("token")
+        window.location.href = "/views/logout"
+      })
+    }
   </script>
 </nav>
+<div>
+  <% const ROOT_DIR = process.cwd() %>
+  <%- include(ROOT_DIR + '/views/layout/htmlUtil'); %>
+</div>

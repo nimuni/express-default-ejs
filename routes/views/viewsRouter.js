@@ -34,6 +34,14 @@ router.get("/logout", (req, res) => {
   res.render("./page/login", {title: process.env.TITLE, user: req.user});
 })
 
+router.get("/test", (req, res) => {
+  if (req.user) {
+    res.render("./page/test", {title: process.env.TITLE, user: req.user});
+  } else {
+    res.redirect("/views/login");
+  }
+})
+
 router.get("/myPage", (req, res) => {
   if (req.user) {
     res.render("./page/myPage", {title: process.env.TITLE, user: req.user});
@@ -51,8 +59,7 @@ router.get("/register", async (req, res) => {
 
 router.get("/userInfo/:id", async (req, res) => {
   console.log("call /userInfo")
-  console.log(req.params.id)
-  res.send(req.params.id);
+  res.render("./page/userInfo", {title: process.env.TITLE, user: req.user})
 })
 
 router.get("/userList", async (req, res) => {

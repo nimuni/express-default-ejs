@@ -8,9 +8,21 @@
     <header>
       <%- include(ROOT_DIR + '/views/layout/header'); %>
     </header>
-    <main>
-      <div>1234</div>
-      <div id="test"></div>
+    <main class="with-nav">
+      <div class="container">
+        
+      </div>
+      <%= JSON.stringify(user) %>
+      <div class="container px-4">
+        <div class="row gx-5">
+          <div class="col-6">
+           <div class="p-3 border bg-light">Custom column padding</div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 border bg-light">Custom column padding</div>
+          </div>
+        </div>
+      </div>
     </main>
   </body>
   <!-- FOOTER -->
