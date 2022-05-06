@@ -1,0 +1,96 @@
+<div class="alert-position ">
+  <div class="alert-container" id="alert-container"></div>
+</div>
+<script>
+  let alertContainer = document.getElementById("alert-container");
+  function util_addAlert(detail, type="primary", ms=5000){
+    let alertBoxElem = document.createElement("div");
+    let alertElem = document.createElement("div");
+    alertBoxElem.classList.add("alert-box")
+    alertElem.classList.add("alert")
+
+    // alert type
+    switch (type) {
+      case "primary":
+        alertElem.classList.add("alert-primary")
+        break;
+      case "secondary":
+        alertElem.classList.add("alert-secondary")
+        break;
+      case "success":
+        alertElem.classList.add("alert-success")
+        break;
+      case "danger":
+        alertElem.classList.add("alert-danger")
+        break;
+      case "warning":
+        alertElem.classList.add("alert-warning")
+        break;
+      case "info":
+        alertElem.classList.add("alert-info")
+        break;
+      case "light":
+        alertElem.classList.add("alert-light")
+        break;
+      case "dark":
+        alertElem.classList.add("alert-dark")
+        break;
+      default:
+        alertElem.classList.add("alert-primary")
+        break;
+    }
+
+    alertElem.innerText = detail;
+    alertBoxElem.appendChild(alertElem);
+    alertContainer.appendChild(alertBoxElem)
+
+    // delete alert
+    setTimeout(()=>{
+      alertElem.remove();
+      alertBoxElem.remove();
+    }, ms);
+  }
+  util_addAlert("test text", "info", 3000);
+  util_addAlert("text3", "warning", 3000);
+</script>
+<style>
+.alert-position{
+  position: fixed;
+  z-index: 100;
+  bottom: 100px;
+  width: 100%;
+  text-align: center;
+}
+@media screen and (min-width: 992px) {
+  .alert-container{
+    display: inline-block;
+    min-width: 20%;
+    max-width: 20%;
+    word-wrap: break-word;
+  }
+}
+@media screen and (max-width: 992px) {
+  .alert-container{
+    display: inline-block;
+    min-width: 30%;
+    max-width: 30%;
+    word-wrap: break-word;
+  }
+}
+@media screen and (max-width: 768px) {
+  .alert-container{
+    display: inline-block;
+    min-width: 50%;
+    max-width: 50%;
+    word-wrap: break-word;
+  }
+}
+@media screen and (max-width: 576px) {
+  .alert-container{
+    display: inline-block;
+    min-width: 70%;
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+}
+</style>
